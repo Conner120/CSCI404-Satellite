@@ -17,7 +17,7 @@ namespace Satellite
 {
   public class Commands : WebSocketBehavior
   {
-    public String satellite_name = "CALSPHERE 2";
+    public String satellite_name = "CALSPHERE 1";
     protected override void OnMessage (MessageEventArgs e)
     {
         if (e.Data.StartsWith("COMMAND"))

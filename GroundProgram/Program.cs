@@ -41,16 +41,25 @@ using System.Linq.Expressions;namespace Ground
           ws.OnMessage += (sender, e) => {
             Console.WriteLine ("Commands says: " + e.Data);
             if(e.Data.StartsWith("READY")){
-              ws.Send($"COMMAND*{args[1]}*LES-5,CALSPHERE 1*1,0,0");//accel x
+              ws.Send($"COMMAND*{args[1]}*LES-5,CALSPHERE 2*1,0,0");//accel x
             }else if(e.Data.StartsWith($"SECOND*{args[1]}")){
 
             }else if(e.Data.StartsWith("SECOND")){
               //find collisions small list 
               var convergence_names = e.Data.Split("*")[2].Split(",");
               Console.WriteLine(String.Join(" ",convergence_names));
-              Console.WriteLine(satellites.Where(x=>convergence_names.ToList().Contains(x.Name)).ToList().Count);
-              var collions = OrbitalCalculator.Services.Collisions.FindCollisions(satellites,satellites.Find(x=>x.Name.Trim()==e.Data.Split("*")[3]),2,60);
-              Console.WriteLine(collions);
+              Console.WriteLine(satellites.Where(x=>convergence_names.ToList().Contains(x.Name.Trim())).ToList().Count);
+              var collions = OrbitalCalculator.Services.Collisions.FindCollisions(satellites.Where(x=>convergence_names.ToList().Contains(x.Name.Trim())).ToList(),satellites.Find(x=>x.Name.Trim()==e.Data.Split("*")[3]),2,60);
+              Console.WriteLine(collions.Count);
+              foreach (var item in collions)
+              {
+                  Console.WriteLine($"{item.satilite_name}U{e.Data.Split("*")[3]}@{item.time}");
+              }
+              if(collions.Count>0){
+                ws.Send("SECONDRESPONSE*TRUE");
+              }else{
+                ws.Send("SECONDRESPONSE*FALSE");
+              }
             }
           };
           ws.Connect ();

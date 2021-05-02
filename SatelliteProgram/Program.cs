@@ -27,10 +27,11 @@ namespace Satellite
                 //output orbital change request
             }else{ 
                 // waiting for second confirmation or one time pass 
-              Send("Awaiting Confirmation OR send override");
-              Sessions.Broadcast($"SECOND*{e.Data.Split("*")[1]}*{e.Data.Split("*")[2]}*{satellite_name}");  
               if(e.Data.Split("*").Length>4){
-                //process pad overide
+                //process pad overide if pad fail maybe degnate trust
+              }else{
+                Send("Awaiting Confirmation OR send override");
+                Sessions.Broadcast($"SECOND*{e.Data.Split("*")[1]}*{e.Data.Split("*")[2]}*{satellite_name}");  
               }
             }
         }else if(e.Data.StartsWith("SECONDRESPONSE")){

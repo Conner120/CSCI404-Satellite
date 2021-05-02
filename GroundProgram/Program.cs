@@ -46,19 +46,19 @@ using System.Linq.Expressions;namespace Ground
 
             }else if(e.Data.StartsWith("SECOND")){
               //find collisions small list 
-              var convergence_names = e.Data.Split("*")[2].Split(",");
-              Console.WriteLine(String.Join(" ",convergence_names));
-              Console.WriteLine(satellites.Where(x=>convergence_names.ToList().Contains(x.Name.Trim())).ToList().Count);
-              var collions = OrbitalCalculator.Services.Collisions.FindCollisions(satellites.Where(x=>convergence_names.ToList().Contains(x.Name.Trim())).ToList(),satellites.Find(x=>x.Name.Trim()==e.Data.Split("*")[3]),2,60);
-              Console.WriteLine(collions.Count);
-              foreach (var item in collions)
-              {
-                  Console.WriteLine($"{item.satilite_name}U{e.Data.Split("*")[3]}@{item.time}");
-              }
-              if(collions.Count>0){
-                ws.Send("SECONDRESPONSE*TRUE");
-              }else{
-                ws.Send("SECONDRESPONSE*FALSE");
+              if(true){//if trusted
+                var convergence_names = e.Data.Split("*")[2].Split(",");
+                var collions = OrbitalCalculator.Services.Collisions.FindCollisions(satellites.Where(x=>convergence_names.ToList().Contains(x.Name.Trim())).ToList(),satellites.Find(x=>x.Name.Trim()==e.Data.Split("*")[3]),2,60);
+                Console.WriteLine(collions.Count);
+                foreach (var item in collions)
+                {
+                    Console.WriteLine($"{item.satilite_name}U{e.Data.Split("*")[3]}@{item.time}");
+                }
+                if(collions.Count>0){
+                  ws.Send("SECONDRESPONSE*TRUE");
+                }else{
+                  ws.Send("SECONDRESPONSE*FALSE");
+                }
               }
             }
           };

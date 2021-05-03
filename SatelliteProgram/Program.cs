@@ -47,7 +47,7 @@ namespace Satellite
               }
               else
               {
-              // The pad is NOT accepted, no lower trust and deny override
+              // The pad is NOT accepted, so lower trust and deny override
               }
             } else {
               Send("Awaiting Confirmation OR send override");

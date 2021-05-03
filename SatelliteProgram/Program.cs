@@ -39,18 +39,23 @@ namespace Satellite
           }
         } else if(e.Data.StartsWith("SECONDRESPONSE")) {
           Send("OK");
-          if (e.Data.Split("*")[1]=="TRUE") {
+          initial_grnd = e.Data.Split("*")[1];
+          if (e.Data.Split("*")[2]=="TRUE") {
             // execute action and improve trust
             trust_model.Improve(initial_grnd);
+            Console.WriteLine("CONFIRMED SECOND CHOICE");
           } else {
             // reject and degrade trust
             trust_model.Degrade(initial_grnd);
+            Console.WriteLine("FAILS SECOND CHOICE");
           }
         } else if (e.Data.StartsWith("GROUNDCONNECTED")) {
           //tell ground if any actions failed
           // add connection to trust model
           string station_name = e.Data.Split("*")[1];
-          trust_model.AddStation(station_name);
+          if(station_name!="e1"&station_name!="e2"){
+            trust_model.AddStation(station_name);
+          }
           Send("READY*"+satellite_name);
         }
     }
@@ -87,6 +92,7 @@ namespace Satellite
     }
 
     public void Degrade(string key) {
+      Console.WriteLine(key);
       if (trust_pool[key] == 1) {
         return;
       } else {

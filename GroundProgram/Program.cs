@@ -48,16 +48,16 @@ using System.Linq.Expressions;namespace Ground
               //find collisions small list 
               if(true){//if trusted
                 var convergence_names = e.Data.Split("*")[2].Split(",");
-                var collions = OrbitalCalculator.Services.Collisions.FindCollisions(satellites.Where(x=>convergence_names.ToList().Contains(x.Name.Trim())).ToList(),satellites.Find(x=>x.Name.Trim()==e.Data.Split("*")[3]),2,60);
-                Console.WriteLine(collions.Count);
-                foreach (var item in collions)
+                var convergences = OrbitalCalculator.Services.Collisions.FindCollisions(satellites.Where(x=>convergence_names.ToList().Contains(x.Name.Trim())).ToList(),satellites.Find(x=>x.Name.Trim()==e.Data.Split("*")[3]),2,60);
+                Console.WriteLine(convergences.Count);
+                foreach (var item in convergences)
                 {
                     Console.WriteLine($"{item.satilite_name}U{e.Data.Split("*")[3]}@{item.time}");
                 }
-                if(collions.Count>0){
-                  ws.Send("SECONDRESPONSE*TRUE");
+                if(convergences.Count!=0){
+                  ws.Send($"SECONDRESPONSE*{args[1]}*TRUE");
                 }else{
-                  ws.Send("SECONDRESPONSE*FALSE");
+                  ws.Send($"SECONDRESPONSE*{args[1]}*FALSE");
                 }
               }
             }

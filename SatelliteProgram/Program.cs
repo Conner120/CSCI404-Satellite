@@ -19,7 +19,7 @@ namespace Satellite
   {
     public String initial_grnd;
     public String satellite_name = "CALSPHERE 1";
-    public TrustModel trust_model = new TrustModel();
+    public TrustModel trust_model = new TrustModel();      
     protected override void OnMessage (MessageEventArgs e)
     {
         if (e.Data.StartsWith("COMMAND"))
@@ -31,7 +31,24 @@ namespace Satellite
           } else { 
             // waiting for second confirmation or one time pass 
             if (e.Data.Split("*").Length>4) {
-              //process pad overide if pad fail maybe degnate trust
+              // process pad overide if pad fail maybe degnate trust
+              // file path may require tweaking to reach OneTimePad/Message.txt.
+              byte[] originalBytes = Encoding.Unicode.GetBytes("../../../../OneTimePad/Message.txt");
+              // generate the pad
+              byte[] pad = OneTimePad.Program.GeneratePad(size: originalBytes.Length, seed: 1);
+              // encrypted message
+              byte[] encryptedBytes = Encoding.Unicode.GetBytes("../../../../OneTimePad/Message-encrypted.txt");
+              // decrypt the message
+              byte[] decrypted = OneTimePad.Program.Decrypt(encryptedBytes, pad);
+              // compare the original message and decrypted message
+              if(decrypted == originalBytes)
+              {
+              // The pad is accepted, so trust and accept override
+              }
+              else
+              {
+              // The pad is NOT accepted, no lower trust and deny override
+              }
             } else {
               Send("Awaiting Confirmation OR send override");
               Sessions.Broadcast($"SECOND*{e.Data.Split("*")[1]}*{e.Data.Split("*")[2]}*{satellite_name}");  

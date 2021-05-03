@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OneTimePad
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -58,11 +58,11 @@ namespace OneTimePad
                 {
                     Console.WriteLine("The one time pad.");
                     Console.WriteLine(OTP + "\n");
-                    File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/One Time Pad.txt", OTP);
+                    File.WriteAllTextAsync("../../../One Time Pad.txt", OTP);
 
                     Console.WriteLine("Encrypted Message:");
                     Console.WriteLine(encryptito + "\n");
-                    File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/" + input + "-encrypted.txt", encryptito);
+                    File.WriteAllTextAsync("../../../" + input + "-encrypted.txt", encryptito);
                 }
                 // If the user selects 'decrypt' or '2' the program will decrypt
                 // the message and display it to the user.
@@ -78,11 +78,11 @@ namespace OneTimePad
                 {
                     Console.WriteLine("The one time pad.");
                     Console.WriteLine(OTP + "\n");
-                    File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/One Time Pad.txt", OTP);
+                    File.WriteAllTextAsync("../../../One Time Pad.txt", OTP);
 
                     Console.WriteLine("Encrypted Message:");
                     Console.WriteLine(encryptito + "\n");
-                    File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/" + input + "-encrypted.txt", encryptito);
+                    File.WriteAllTextAsync("../../../" + input + "-encrypted.txt", encryptito);
 
                     Console.WriteLine("The decrypted message.");
                     Console.WriteLine(Encoding.Unicode.GetString(decrypted) + "\n");

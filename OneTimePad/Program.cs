@@ -8,69 +8,95 @@ namespace OneTimePad
     {
         static void Main(string[] args)
         {
+            // Ask the user to type in a .txt file name to be worked on.
             Console.WriteLine("Enter a text file. (DO NOT include the .txt extension)");
             var input = Console.ReadLine();
-            var messageFile = new StreamReader("D:/404 Satellites/OneTimePad/" + input + ".txt").ReadToEnd();
+
+            // The hardcoded file path is what so far works
+            // due to how VS Studio runs the program.
+            // A more general file path will be added once found.
+            var messageFile = new StreamReader("../../../" + input + ".txt").ReadToEnd();
+
+            // Display the .txt file's contents to the user.
             Console.WriteLine("\nBeginning Message:");
             Console.WriteLine(messageFile + "\n");
+
             // Converting text to bytes, assuming unicode.
             byte[] originalBytes = Encoding.Unicode.GetBytes(messageFile);
-
-            Console.WriteLine("Select an Option:\n" +
-                "1. encrypt my file\n" +
-                "2. decrypt my file\n" +
-                "3. all\n");
-            var methodinput = Console.ReadLine();
+            
+            
 
             // generate a pad in memory.
             byte[] pad = GeneratePad(size: originalBytes.Length, seed: 1);
-            // I'm going to display these bytes in Base64, but one would
-            // probably save them to a file; this is the Pad (or "key").
+            // The pad is converted to base64.
             var OTP = Convert.ToBase64String(inArray: pad);
 
 
-            // We encrypt the bytes by adding our noise.
+            // Encrypt the text file's contents.
             byte[] encrypted = Encrypt(originalBytes, pad);
-            // again, displaying in base64, but you would typically save
-            // these to a file too; this is your encrypted "file" or message.
+            // The encrypted message.
             var encryptito = Convert.ToBase64String(inArray: encrypted);
 
             byte[] encryptedFromBase64 = Convert.FromBase64String(encryptito);
 
-            // decrypting the encoded message using the key made up of noise.
+            // Decrypting the encrypted message using the pad.
             byte[] decrypted = Decrypt(encryptedFromBase64, pad);
-
-            if (methodinput == "encrypt" | methodinput == "1")
+            var count = 0;
+            while (count == 0)
             {
-                Console.WriteLine("The one time pad.");
-                Console.WriteLine(OTP + "\n");
-                File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/One Time Pad.txt", OTP);
+                // Provide the user 3 options of methods to perform on a file.
+                Console.WriteLine("Select an Option:\n" +
+                "1. encrypt my file\n" +
+                "2. decrypt my file\n" +
+                "3. all methods\n" +
+                "4. exit program\n");
+                var methodinput = Console.ReadLine();
 
-                Console.WriteLine("Encrypted Message:");
-                Console.WriteLine(encryptito + "\n");
-                File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/" + input + "-encrypted.txt", encryptito);
+                // If the user selects 'encrypt' or '1' the program will encrypt
+                // the message and generate an OTP
+                if (methodinput == "encrypt" | methodinput == "1")
+                {
+                    Console.WriteLine("The one time pad.");
+                    Console.WriteLine(OTP + "\n");
+                    File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/One Time Pad.txt", OTP);
+
+                    Console.WriteLine("Encrypted Message:");
+                    Console.WriteLine(encryptito + "\n");
+                    File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/" + input + "-encrypted.txt", encryptito);
+                }
+                // If the user selects 'decrypt' or '2' the program will decrypt
+                // the message and display it to the user.
+                else if (methodinput == "decrypt" | methodinput == "2")
+                {
+                    Console.WriteLine("The decrypted message.");
+                    Console.WriteLine(Encoding.Unicode.GetString(decrypted) + "\n");
+                }
+                // If the user selects 'all' or '3' the program will execute
+                // all functions onto the text file's contents and display
+                // the results to the user accordingly.
+                else if (methodinput == "all" | methodinput == "3")
+                {
+                    Console.WriteLine("The one time pad.");
+                    Console.WriteLine(OTP + "\n");
+                    File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/One Time Pad.txt", OTP);
+
+                    Console.WriteLine("Encrypted Message:");
+                    Console.WriteLine(encryptito + "\n");
+                    File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/" + input + "-encrypted.txt", encryptito);
+
+                    Console.WriteLine("The decrypted message.");
+                    Console.WriteLine(Encoding.Unicode.GetString(decrypted) + "\n");
+                }
+                // If the user selects 'exit' or '4' the program will
+                // exit the console environment, causing it to close.
+                else if (methodinput == "exit" | methodinput == "4")
+                {
+                    Environment.Exit(69);
+                }
+                // Else statement just returns the 4 original options.
+                // Meant to handle mistyped actions.
+                else{}
             }
-            else if (methodinput == "decrypt" | methodinput == "2")
-            {
-                // displaying the original unencrypted message.
-                Console.WriteLine("The decrypted message.");
-                Console.WriteLine(Encoding.Unicode.GetString(decrypted) + "\n");
-            }
-            else if (methodinput == "all" | methodinput == "3")
-            {
-                Console.WriteLine("The one time pad.");
-                Console.WriteLine(OTP + "\n");
-                File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/One Time Pad.txt", OTP);
-
-                Console.WriteLine("Encrypted Message:");
-                Console.WriteLine(encryptito + "\n");
-                File.WriteAllTextAsync("D:/404 Satellites/OneTimePad/" + input + "-encrypted.txt", encryptito);
-
-                // displaying the original unencrypted message.
-                Console.WriteLine("The decrypted message.");
-                Console.WriteLine(Encoding.Unicode.GetString(decrypted) + "\n");
-            }
-
 
 
         }

@@ -43,11 +43,24 @@ namespace Satellite
               // compare the original message and decrypted message
               if(decrypted == originalBytes)
               {
-              // The pad is accepted, so trust and accept override
+                // The pad is accepted, so trust and accept override
+                if (trust_model.isInPool(initial_grnd)) {
+                  trust_model.Improve(initial_grnd);
+                } else {
+                  trust_model.AddStation(initial_grnd);
+                }
+                Send("Running CMD");
               }
               else
               {
-              // The pad is NOT accepted, so lower trust and deny override
+                // The pad is NOT accepted, so lower trust and deny override
+                if (trust_model.isInPool(initial_grnd)) {
+                  trust_model.Degrade(initial_grnd);
+                } else {
+                  trust_model.AddStation(initial_grnd);
+                  trust_model.Degrade(initial_grnd);
+                }
+                Send("Pad denied, cancelling command");
               }
             } else {
               Send("Awaiting Confirmation OR send override");
@@ -123,6 +136,11 @@ namespace Satellite
       } else {
         trust_pool[key] += 0.1;
       }
+    }
+
+    public bool isInPool(string key) {
+      bool keyExists = trust_pool.ContainsKey(key);
+      return keyExists;
     }
   }
 }
